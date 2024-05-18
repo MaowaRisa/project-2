@@ -1,7 +1,9 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
+
 export default [
+ 
   {
     files:["src/**/*.ts"],
     ignores: ["**/node_modules/", ".dist/"],
@@ -18,11 +20,11 @@ export default [
       "no-console": "warn",
       "no-undef": "error",
     },
-    extends: [
-      "eslint:recommended", 
-      "plugin:@typescript-eslint/recommended", 
-      "prettier"
-    ]
+    // extends: [
+    //   "eslint:recommended", 
+    //   "plugin:@typescript-eslint/recommended", 
+    //   "prettier"
+    // ]
   },
   pluginJs.configs.recommended,
   ...tseslint.configs.recommended,
