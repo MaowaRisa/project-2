@@ -31,6 +31,10 @@ const updateStudent: RequestHandler = catchAsync(async (req, res) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'Update not successful!');
   }
 });
+
+// const updateStudent : RequestHandler = catchAsync(async(req, res)=>{
+
+// })
 const getAllStudents: RequestHandler = catchAsync(async (req, res) => {
   const result = await StudentServices.getAllStudentsFromDB();
 

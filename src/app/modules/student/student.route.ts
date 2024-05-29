@@ -7,11 +7,11 @@ const router = express.Router();
 // router.post('/create-student', StudentControllers.createStudent);
 
 // update the student
-router.put('/update-student/:studentId', StudentControllers.updateStudent);
+// router.put('/update-student/:studentId', StudentControllers.updateStudent);
 router.get('/', StudentControllers.getAllStudents);
 
 router.get('/:studentId', StudentControllers.getSingleStudent);
-
+router.patch('/:studentId')
 router.delete('/:studentId', StudentControllers.deleteStudent);
 
 export const StudentRoutes = router;

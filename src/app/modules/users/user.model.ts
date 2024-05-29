@@ -2,6 +2,8 @@ import { Schema, model } from 'mongoose';
 import { TUser } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
 
 const userSchema = new Schema<TUser>(
   {
@@ -52,5 +54,13 @@ userSchema.post('save', function (updatedDoc, next) {
   updatedDoc.password = '';
   next();
 });
+userSchema.pre('findOneAndUpdate', async function(next){
+  const query = this.getQuery();
+  const isUserExist = await User.findOne(query)
+  if(!isUserExist){
+    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+  }
+  next()
+})
 
 export const User = model<TUser>('User', userSchema);

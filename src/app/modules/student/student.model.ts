@@ -8,6 +8,8 @@ import {
   StudentModel,
   TUserName,
 } from './student.interface';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -225,5 +227,13 @@ studentSchema.statics.isUserExist = async function (id: string) {
 //   const existingUser = await Student.findOne({id})
 //   return existingUser;
 // }
+studentSchema.pre('findOneAndUpdate', async function(next){
+  const query = this.getQuery();
+  const isStudentExist = await Student.findOne(query)
+  if(!isStudentExist){
+    throw new AppError(httpStatus.NOT_FOUND, "Student not found!");
+  }
+  next()
+})
 
 export const Student = model<TStudent, StudentModel>('Student', studentSchema);
