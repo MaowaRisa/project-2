@@ -7,6 +7,7 @@ import { isEmpty } from '../../utility/utility';
 import httpStatus from 'http-status';
 import sendResponse from '../../utility/sendResponse';
 import catchAsync from '../../utility/catchAsync';
+import AppError from '../../errors/AppError';
 
 const updateStudent: RequestHandler = catchAsync(async (req, res) => {
   const { studentId } = req.params;
@@ -27,7 +28,7 @@ const updateStudent: RequestHandler = catchAsync(async (req, res) => {
       data: updatedData,
     });
   } else {
-    throw new Error('Update not successful!');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Update not successful!');
   }
 });
 const getAllStudents: RequestHandler = catchAsync(async (req, res) => {
@@ -52,7 +53,7 @@ const getSingleStudent: RequestHandler = catchAsync(async (req, res) => {
       data: result,
     });
   } else {
-    throw new Error('No match found!');
+    throw new AppError(httpStatus.NOT_FOUND, 'No match found!');
   }
 });
 const deleteStudent: RequestHandler = catchAsync(async (req, res) => {

@@ -1,9 +1,11 @@
 import { z } from 'zod';
+import AppError from '../../errors/AppError';
+import httpStatus from 'http-status';
 const capitalizeFormat = (value: string) => {
   const valCapitalize =
     value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   if (valCapitalize !== value) {
-    throw new Error('First name must be in capitalize format');
+    throw new AppError(httpStatus.BAD_REQUEST, 'First name must be in capitalize format');
   }
   return value;
 };
@@ -54,6 +56,7 @@ const createStudentValidationSchema = z.object({
       guardian: guardianSchema,
       localGuardian: localGuardianSchema,
       admissionSemester: z.string(),
+      academicDepartment: z.string(),
       profileImg: z
         .string()
         .url({ message: 'Profile image must be a valid URL' })
