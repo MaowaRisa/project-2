@@ -1,6 +1,5 @@
-import { object } from 'joi';
 // import { TStudent, StudentMethod } from './student.interface';
-import { Schema, model, connect, Model, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 export type TGuardian = {
   fatherName: string;

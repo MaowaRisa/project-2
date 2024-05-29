@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Joi from 'joi';
 const capitalizeFormat = (value: string, helpers: any) => {
   const valCapitalize =

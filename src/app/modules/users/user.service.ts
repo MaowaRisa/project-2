@@ -1,4 +1,3 @@
-import { TAcademicSemester } from './../academicSemester/academicSemester.interface';
 import config from '../../config';
 import { AcademicSemester } from '../academicSemester/academicSemester.model';
 import { TStudent } from '../student/student.interface';
@@ -20,10 +19,10 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
   const admissionSemester = await AcademicSemester.findById(
     payload.admissionSemester,
   );
-  if(admissionSemester){
+  if (admissionSemester) {
     userData.id = await generatedStudentId(admissionSemester);
-  }else{
-    throw new Error("Academic semester mismatched!")
+  } else {
+    throw new Error('Academic semester mismatched!');
   }
 
   // create a user

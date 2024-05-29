@@ -1,5 +1,5 @@
-import { Schema, model, connect } from 'mongoose';
-import validator, { isDecimal } from 'validator';
+import { Schema, model } from 'mongoose';
+import validator from 'validator';
 
 import {
   TGuardian,
@@ -8,7 +8,6 @@ import {
   StudentModel,
   TUserName,
 } from './student.interface';
-import config from '../../config';
 
 const userNameSchema = new Schema<TUserName>({
   firstName: {
@@ -124,7 +123,7 @@ const studentSchema = new Schema<TStudent, StudentModel>({
     required: [true, 'Gender is required'],
   },
   dateOfBirth: {
-    type: Date
+    type: Date,
   },
   email: {
     type: String,
@@ -179,7 +178,7 @@ const studentSchema = new Schema<TStudent, StudentModel>({
   },
   admissionSemester: {
     type: Schema.Types.ObjectId,
-    ref: 'AcademicSemester'
+    ref: 'AcademicSemester',
   },
   isDeleted: {
     type: Boolean,

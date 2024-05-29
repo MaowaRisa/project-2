@@ -1,4 +1,4 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { RequestHandler } from 'express';
 import { StudentServices } from './student.service';
 // import studentValidationSchema from './student.joi.validation';
 import { updateStudentValidationSchema } from './student.validation';

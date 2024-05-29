@@ -1,12 +1,10 @@
 import { Schema, model } from 'mongoose';
+import { TAcademicSemester } from './academicSemester.interface';
 import {
-  TAcademicSemester,
-  TAcademicSemesterCode,
-  TAcademicSemesterName,
-  TMonth,
-} from './academicSemester.interface';
-import { AcademicSemesterCode, AcademicSemesterName, Months } from './academicSemester.constants';
-
+  AcademicSemesterCode,
+  AcademicSemesterName,
+  Months,
+} from './academicSemester.constants';
 
 const academicSemesterSchema = new Schema<TAcademicSemester>({
   name: {
@@ -27,7 +25,7 @@ const academicSemesterSchema = new Schema<TAcademicSemester>({
   },
   year: {
     type: String,
-    required: [true, "Date is required!"]
+    required: [true, 'Date is required!'],
   },
   startMonth: {
     type: String,
@@ -36,7 +34,7 @@ const academicSemesterSchema = new Schema<TAcademicSemester>({
       message:
         "{VALUE} is not valid! Please choose from 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'",
     },
-    required: [true, "Start month is required!"]
+    required: [true, 'Start month is required!'],
   },
   endMonth: {
     type: String,
@@ -45,21 +43,22 @@ const academicSemesterSchema = new Schema<TAcademicSemester>({
       message:
         "{VALUE} is not valid! Please choose from 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'",
     },
-    required: [true, "End month is required!"],
+    required: [true, 'End month is required!'],
   },
 });
 
 // Middleware
 // one semester per year
 academicSemesterSchema.pre('save', async function (next) {
-    const isSemesterExists = await AcademicSemester.findOne({ 
-        year: this.year,
-        name: this.name
-    });
-    if(isSemesterExists){
-        throw new Error("Semester is already exists!")
-    }
-})
+  const isSemesterExists = await AcademicSemester.findOne({
+    year: this.year,
+    name: this.name,
+  });
+  if (isSemesterExists) {
+    throw new Error('Semester is already exists!');
+  }
+  next();
+});
 
 export const AcademicSemester = model<TAcademicSemester>(
   'AcademicSemester',

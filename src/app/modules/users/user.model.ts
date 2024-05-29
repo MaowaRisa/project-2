@@ -40,9 +40,9 @@ const userSchema = new Schema<TUser>(
 // pre save middleware // will work on create() and save()
 userSchema.pre('save', async function (next) {
   // hashing password and save into DB
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
+  // const user = this
+  this.password = await bcrypt.hash(
+    this.password,
     Number(config.bcrypt_salt_round),
   );
   next();
