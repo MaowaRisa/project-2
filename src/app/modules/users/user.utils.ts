@@ -1,8 +1,6 @@
 import { TAcademicSemester } from '../academicSemester/academicSemester.interface';
-import { Student } from '../student/student.model';
 import { User } from './user.model';
 const findLastStudentId = async (searchExistingId: string) => {
-
   const lastStudent = await User.findOne(
     {
       role: 'student',
@@ -29,4 +27,3 @@ export const generatedStudentId = async (payload: TAcademicSemester) => {
   incrementId = `${payload.year}${payload.code}${incrementId}`;
   return incrementId;
 };
-
