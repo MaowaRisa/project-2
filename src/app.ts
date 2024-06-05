@@ -13,11 +13,11 @@ app.use(cors());
 
 // application routes
 app.use('/api/v1', router);
-const test = async(req: Request, res: Response) => {
+const test = async (req: Request, res: Response) => {
   const a = 10;
   // Promise.reject();
-  res.send(a)
-}
+  res.send(a);
+};
 app.get('/', test);
 // middleware for error handling
 app.use(globalErrorHandler);

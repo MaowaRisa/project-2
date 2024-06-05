@@ -6,6 +6,7 @@ import httpStatus from 'http-status';
 import { User } from '../users/user.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 import { studentSearchableFields } from './student.constants';
+import { TStudent } from './student.interface';
 
 // const createStudentIntoDB = async (studentData: TStudent) => {
 //   // Built in static method
@@ -26,11 +27,51 @@ import { studentSearchableFields } from './student.constants';
 //   return result;
 // };
 
-const updateStudentIntoDB = async (id: string, studentData: object) => {
-  const result = await Student.findOneAndUpdate({ id: id }, studentData, {
+const updateStudentIntoDB = async (id: string, payload: Partial<TStudent>) => {
+  // const result = await Student.findOneAndUpdate({ id: id }, studentData, {
+  //   new: true,
+  // });
+  // //// console.log(result)
+  // return result;
+  const { name, guardian, localGuardian, ...remainingStudentData } = payload;
+
+  const modifiedUpdatedData: Record<string, unknown> = {
+    ...remainingStudentData,
+  };
+
+  /*
+    guardain: {
+      fatherOccupation:"Teacher"
+    }
+
+    guardian.fatherOccupation = Teacher
+
+    name.firstName = 'Maowa'
+    name.lastName = 'Risa'
+  */
+
+  if (name && Object.keys(name).length) {
+    for (const [key, value] of Object.entries(name)) {
+      modifiedUpdatedData[`name.${key}`] = value;
+    }
+  }
+
+  if (guardian && Object.keys(guardian).length) {
+    for (const [key, value] of Object.entries(guardian)) {
+      modifiedUpdatedData[`guardian.${key}`] = value;
+    }
+  }
+
+  if (localGuardian && Object.keys(localGuardian).length) {
+    for (const [key, value] of Object.entries(localGuardian)) {
+      modifiedUpdatedData[`localGuardian.${key}`] = value;
+    }
+  }
+
+  const result = await Student.findByIdAndUpdate(id, modifiedUpdatedData, {
     new: true,
+    runValidators: true,
   });
-  //// console.log(result)
   return result;
 };
 const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
@@ -96,17 +137,17 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
   // return fieldsQuery;
 
   // refactor QueryBuilder
-  
+
   const studentQuery = new QueryBuilder(
     Student.find()
-    .populate('admissionSemester')
-    .populate({
-      path: 'academicDepartment',
-      populate: {
-        path: 'academicFaculty',
-      }
-    })
-    ,query,
+      .populate('admissionSemester')
+      .populate({
+        path: 'academicDepartment',
+        populate: {
+          path: 'academicFaculty',
+        },
+      }),
+    query,
   )
     .search(studentSearchableFields)
     .filter()

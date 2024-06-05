@@ -5,7 +5,10 @@ const capitalizeFormat = (value: string) => {
   const valCapitalize =
     value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
   if (valCapitalize !== value) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'First name must be in capitalize format');
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      'First name must be in capitalize format',
+    );
   }
   return value;
 };

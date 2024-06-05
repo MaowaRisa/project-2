@@ -48,18 +48,18 @@ const createStudentIntoDB = async (password: string, payload: TStudent) => {
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; // reference ID
 
-    const newStudent = await Student.create([payload], {session});
+    const newStudent = await Student.create([payload], { session });
 
-  if(!newStudent.length){
-    throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student")
-  }
-  await session.commitTransaction();
-  await session.endSession();
+    if (!newStudent.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
+    }
+    await session.commitTransaction();
+    await session.endSession();
     return newStudent;
   } catch (error: any) {
-    await session.abortTransaction()
-    await session.endSession()
-    throw new Error(error)
+    await session.abortTransaction();
+    await session.endSession();
+    throw new Error(error);
   }
 };
 const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
@@ -74,11 +74,8 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
   const academicDepartment = await AcademicDepartment.findById(
     payload.academicDepartment,
   );
-  if(!academicDepartment){
-    throw new AppError(
-      httpStatus.BAD_REQUEST,
-      'Academic department not found'
-    )
+  if (!academicDepartment) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Academic department not found');
   }
   const session = await mongoose.startSession();
   try {
@@ -95,17 +92,17 @@ const createFacultyIntoDB = async (password: string, payload: TFaculty) => {
     payload.id = newUser[0].id;
     payload.user = newUser[0]._id; // reference ID
 
-    const newFaculty = await Faculty.create([payload], {session});
+    const newFaculty = await Faculty.create([payload], { session });
 
-  if(!newFaculty.length){
-    throw new AppError(httpStatus.BAD_REQUEST, "Failed to create student")
-  }
-  await session.commitTransaction();
-  await session.endSession();
+    if (!newFaculty.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Failed to create student');
+    }
+    await session.commitTransaction();
+    await session.endSession();
     return newFaculty;
   } catch (error: any) {
-    await session.abortTransaction()
-    await session.endSession()
+    await session.abortTransaction();
+    await session.endSession();
     throw new Error(error);
   }
 };

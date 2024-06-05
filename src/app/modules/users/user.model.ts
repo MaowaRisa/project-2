@@ -54,13 +54,13 @@ userSchema.post('save', function (updatedDoc, next) {
   updatedDoc.password = '';
   next();
 });
-userSchema.pre('findOneAndUpdate', async function(next){
+userSchema.pre('findOneAndUpdate', async function (next) {
   const query = this.getQuery();
-  const isUserExist = await User.findOne(query)
-  if(!isUserExist){
-    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+  const isUserExist = await User.findOne(query);
+  if (!isUserExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
   }
-  next()
-})
+  next();
+});
 
 export const User = model<TUser>('User', userSchema);

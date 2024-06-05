@@ -1,7 +1,5 @@
 import { RequestHandler } from 'express';
 import { StudentServices } from './student.service';
-// import studentValidationSchema from './student.joi.validation';
-import { updateStudentValidationSchema } from './student.validation';
 import { isEmpty } from '../../utility/utility';
 
 import httpStatus from 'http-status';
@@ -10,15 +8,10 @@ import catchAsync from '../../utility/catchAsync';
 import AppError from '../../errors/AppError';
 
 const updateStudent: RequestHandler = catchAsync(async (req, res) => {
-  const { studentId } = req.params;
-  const studentData = req.body;
+  const { id } = req.params;
+  const { student } = req.body;
 
-  const validatedData = updateStudentValidationSchema.parse(studentData);
-
-  const updatedData = await StudentServices.updateStudentIntoDB(
-    studentId,
-    validatedData,
-  );
+  const updatedData = await StudentServices.updateStudentIntoDB(id, student);
 
   if (updatedData) {
     sendResponse(res, {
@@ -36,7 +29,6 @@ const updateStudent: RequestHandler = catchAsync(async (req, res) => {
 
 // })
 const getAllStudents: RequestHandler = catchAsync(async (req, res) => {
-
   const result = await StudentServices.getAllStudentsFromDB(req.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
