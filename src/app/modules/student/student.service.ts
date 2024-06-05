@@ -4,6 +4,8 @@ import { Student } from './student.model';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 import { User } from '../users/user.model';
+import QueryBuilder from '../../builder/QueryBuilder';
+import { studentSearchableFields } from './student.constants';
 
 // const createStudentIntoDB = async (studentData: TStudent) => {
 //   // Built in static method
@@ -28,19 +30,91 @@ const updateStudentIntoDB = async (id: string, studentData: object) => {
   const result = await Student.findOneAndUpdate({ id: id }, studentData, {
     new: true,
   });
-  // console.log(result)
+  //// console.log(result)
   return result;
 };
-const getAllStudentsFromDB = async () => {
-  const result = await Student.find()
+const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
+  // console.log('base query', query)
+  // const queryObj = { ...query };
+  // // {email: {$regex: query.searchTerm, $options: i}}
+  // // {presentAddress: {$regex: query.searchTerm, $options: i}}
+  // // {name.firstName: {$regex: query.searchTerm, $options: i}}
+  // // console.log(query.searchTerm)
+  // const studentSearchableFields = ['email', 'name.firstName', 'presentAddress'];
+  // let searchTerm = '';
+  // if (query?.searchTerm) {
+  //   searchTerm = query?.searchTerm as string;
+  // }
+  // const searchQuery = Student.find({
+  //   $or: studentSearchableFields.map((field) => ({
+  //     [field]: { $regex: searchTerm, $options: 'i' },
+  //   })),
+  // });
+  // // filtering
+  // const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
+  // excludeFields.forEach((el) => delete queryObj[el]);
+  // //// console.log({query, queryObj})
+  // //// const result = await Student.find()
+  // const filterQuery = searchQuery
+  //   .find(queryObj)
+  //   .populate('admissionSemester')
+  //   .populate({
+  //     path: 'academicDepartment',
+  //     populate: {
+  //       path: 'academicFaculty',
+  //     },
+  //   });
+
+  // let sort = '-createdAt';
+  // if(query.sort){
+  //   sort = query.sort as string;
+  // }
+  // //// console.log('sort',sort)
+  // const sortQuery = filterQuery.sort(sort);
+
+  // let page = 1;
+  // let limit = 1;
+  // let skip = 0;
+  // if(query.limit){
+  //   limit = Number(query.limit);
+  // }
+  // if(query.page){
+  //   page = Number(query.page);
+  //   skip = (page - 1) * limit;
+  // }
+  // const paginateQuery = sortQuery.skip(skip);
+  // const limitQuery = paginateQuery.limit(limit);
+
+  // // field limiting // query object = {fields: "name,email"}
+  // // localhost:5009/api/v1/students?fields=name,email // minus for skip
+  // let fields = '-__v'; // minus
+  // if(query.fields){
+  //   fields = (query.fields as string).split(',').join(' ');
+  // }
+  ////// console.log(fields)
+  // const fieldsQuery = await limitQuery.select(fields)
+  // return fieldsQuery;
+
+  // refactor QueryBuilder
+  
+  const studentQuery = new QueryBuilder(
+    Student.find()
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
       populate: {
         path: 'academicFaculty',
-      },
-    });
+      }
+    })
+    ,query,
+  )
+    .search(studentSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
 
+  const result = await studentQuery.modelQuery;
   return result;
 };
 const getSingleStudentFromDB = async (id: string) => {
@@ -57,12 +131,15 @@ const getSingleStudentFromDB = async (id: string) => {
 };
 const deleteStudentFromDB = async (id: string) => {
   const session = await mongoose.startSession();
-  if(!(await Student.isUserExist(id))){
-    throw new AppError(httpStatus.NOT_FOUND, "User not found or already removed!")
+  if (!(await Student.isUserExist(id))) {
+    throw new AppError(
+      httpStatus.NOT_FOUND,
+      'User not found or already removed!',
+    );
   }
   try {
     session.startTransaction();
-   
+
     const deletedStudent = await Student.findOneAndUpdate(
       { id: id },
       { isDeleted: true },

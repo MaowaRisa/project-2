@@ -12,7 +12,7 @@ router.post(
 );
 router.get('/', AcademicSemesterControllers.getAllAcademicSemester);
 router.get(
-  '/academicSemesterId',
+  '/:academicSemesterId',
   AcademicSemesterControllers.getSingleAcademicSemester,
 );
 router.patch(
