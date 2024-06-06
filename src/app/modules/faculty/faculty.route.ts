@@ -8,12 +8,13 @@ const router = express.Router();
 // get all faculties
 router.get('/', FacultyController.getAllFaculties);
 // get single faculty
-router.get('/:facultyId', FacultyController.getSingleFaculty);
+router.get('/:id', FacultyController.getSingleFaculty);
 // update faculty
 router.patch(
-  '/:facultyId',
+  '/:id',
   validateRequest(facultyValidationSchema.updateFacultyValidationSchema),
   FacultyController.updateFaculty,
 );
+router.delete('/:id', FacultyController.deleteFaculty)
 
 export const FacultyRoutes = router;

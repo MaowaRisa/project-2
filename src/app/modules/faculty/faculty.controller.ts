@@ -15,8 +15,8 @@ const getAllFaculties: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 const getSingleFaculty: RequestHandler = catchAsync(async (req, res) => {
-  const { facultyId } = req.params;
-  const result = await FacultyServices.getSingleFacultyFromDB(facultyId);
+  const { id } = req.params;
+  const result = await FacultyServices.getSingleFacultyFromDB(id);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -25,10 +25,10 @@ const getSingleFaculty: RequestHandler = catchAsync(async (req, res) => {
   });
 });
 const updateFaculty = catchAsync(async (req, res) => {
-  const { facultyId } = req.params;
+  const { id } = req.params;
   const { faculty } = req.body;
 
-  const result = await FacultyServices.updateFacultyIntoDB(facultyId, faculty);
+  const result = await FacultyServices.updateFacultyIntoDB(id, faculty);
 
   if (result) {
     sendResponse(res, {
@@ -41,8 +41,24 @@ const updateFaculty = catchAsync(async (req, res) => {
     throw new AppError(httpStatus.BAD_REQUEST, 'Update not successful!');
   }
 });
+const deleteFaculty = catchAsync( async( req, res) =>{
+  const {id} = req.params;
+  const result = await FacultyServices.deleteFacultyFromDB(id);
+
+  if(result){
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Faculty deleted successfully!',
+      data: null,
+    });
+  } else {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Delete is not successful!');
+  }
+})
 export const FacultyController = {
   getAllFaculties,
   getSingleFaculty,
   updateFaculty,
+  deleteFaculty
 };
