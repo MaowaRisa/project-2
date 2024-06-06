@@ -13,7 +13,7 @@ const getAllFacultiesFromDB = async (query: Record<string, unknown>) => {
   return facultyData;
 };
 const getSingleFacultyFromDB = async (id: string) => {
-  const result = Faculty.find({ id: id });
+  const result = Faculty.findById(id);
   return result;
 };
 const updateFacultyIntoDB = async (id: string, payload: Partial<TFaculty>) => {
@@ -28,8 +28,8 @@ const updateFacultyIntoDB = async (id: string, payload: Partial<TFaculty>) => {
     }
   }
 
-  const result = await Faculty.findOneAndUpdate(
-    { id: id },
+  const result = await Faculty.findByIdAndUpdate(
+    id,
     modifiedUpdatedData,
     { new: true },
   );
@@ -41,7 +41,7 @@ const deleteFacultyFromDB = async(id: string)=>{
   try {
     session.startTransaction();
 
-    const deleteFaculty = await Faculty.findOneAndUpdate({id: id}, {isDeleted: true}, {new: true, session});
+    const deleteFaculty = await Faculty.findByIdAndUpdate(id, {isDeleted: true}, {new: true, session});
   
     if(!deleteFaculty){
       throw new AppError(httpStatus.BAD_REQUEST, 'Failed to delete faculty');
