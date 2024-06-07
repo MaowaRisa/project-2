@@ -27,7 +27,13 @@ const updateCourseValidationSchema = z.object({
         isDeleted: z.boolean().optional(),
     })
 })
+const facultiesWithCourseValidationSchema = z.object({
+    body: z.object({
+        faculties: z.array(z.string()),
+    })
+})
 export const CourseValidations = {
     createCourseValidationSchema,
-    updateCourseValidationSchema
+    updateCourseValidationSchema,
+    facultiesWithCourseValidationSchema
 }
