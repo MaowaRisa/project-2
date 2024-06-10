@@ -33,8 +33,41 @@ const getAllOfferedCourses: RequestHandler = catchAsync(async(req, res)=>{
         })
     }
 });
+const getSingleOfferedCourses: RequestHandler = catchAsync(async(req, res)=>{
+    const { id } = req.params;
+    const result = await OfferedServices.getSingleOfferedCoursesFromDB(id);
+    if(result){
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: 'Successfully retrieved offered course!',
+            data: result
+        })
+    }
+});
+const updateOfferedCourse: RequestHandler = catchAsync(async(req, res)=>{
+    const {id} = req.params;
+    const result = await OfferedServices.updateOfferedCourseIntoDB(id, req.body);
+    if(result){
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: 'Successfully offered course update!',
+            data: result
+        })
+    }else{
+        sendResponse(res, {
+            statusCode: httpStatus.NOT_FOUND,
+            success: false,
+            message: 'Unsuccessfully for operation for offered course update!',
+            data: result
+        })
+    }
+});
 
 export const OfferedCoursesControllers = {
     createOfferedCourse,
-    getAllOfferedCourses
+    getAllOfferedCourses,
+    updateOfferedCourse,
+    getSingleOfferedCourses
 }
