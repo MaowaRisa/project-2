@@ -100,27 +100,21 @@ const createOfferedCourseIntoDB = async (payload: TOfferedCourse) => {
   return result;
 };
 const getAllOfferedCoursesFromDB = async (query: Record<string, unknown>) => {
-  const offeredCourseQuery = new QueryBuilder(
-    OfferedCourse.find()
-      .populate('semesterRegistration')
-      .populate('academicSemester')
-      .populate('academicFaculty')
-      .populate('academicDepartment')
-      .populate('course')
-      .populate('faculty'),
-    query,
-  );
+  const offeredCourseQuery = new QueryBuilder(OfferedCourse.find(), query);
   const result = offeredCourseQuery.modelQuery;
   return result;
 };
 const getSingleOfferedCoursesFromDB = async (id: string) => {
-  const result = OfferedCourse.findById(id)
-      .populate('semesterRegistration')
-      .populate('academicSemester')
-      .populate('academicFaculty')
-      .populate('academicDepartment')
-      .populate('course')
-      .populate('faculty');
+  const result = await OfferedCourse.findById(id)
+    .populate('semesterRegistration')
+    .populate('academicSemester')
+    .populate('academicFaculty')
+    .populate('academicDepartment')
+    .populate('course')
+    .populate('faculty');
+  if (!result) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Offered Course not found');
+  }
   return result;
 };
 const updateOfferedCourseIntoDB = async (
@@ -137,12 +131,16 @@ const updateOfferedCourseIntoDB = async (
     throw new AppError(httpStatus.NOT_FOUND, 'Faculty not found!');
   }
   // Faculty time conflict
-  
+
   const semesterRegistration = isOfferedCourseExists.semesterRegistration;
   // check the semester registration status is upcoming or not
-  const semesterRegistrationStatus = await SemesterRegistration.findById(semesterRegistration);
-  if(semesterRegistrationStatus?.status !== registrationStatus.UPCOMING){
-    throw new AppError(httpStatus.BAD_REQUEST, `You can not update because the offered course is ${semesterRegistrationStatus?.status}`);
+  const semesterRegistrationStatus =
+    await SemesterRegistration.findById(semesterRegistration);
+  if (semesterRegistrationStatus?.status !== registrationStatus.UPCOMING) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `You can not update because the offered course is ${semesterRegistrationStatus?.status}`,
+    );
   }
   const assignedSchedules = await OfferedCourse.find({
     semesterRegistration,
@@ -164,20 +162,23 @@ const updateOfferedCourseIntoDB = async (
   const result = await OfferedCourse.findByIdAndUpdate(id, payload, {
     new: true,
   });
-  return result
+  return result;
 };
-const deleteOfferedCoursesFromDB = async (
-  id: string,
-) => {
-  // Check the offered course is exist 
+const deleteOfferedCoursesFromDB = async (id: string) => {
+  // Check the offered course is exist
   const isOfferedCourseExist = await OfferedCourse.findById(id);
-  if(!isOfferedCourseExist){
-    throw new AppError(httpStatus.NOT_FOUND, 'Offered course is not found!')
+  if (!isOfferedCourseExist) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Offered course is not found!');
   }
-  const semesterRegistration = await SemesterRegistration.findById(isOfferedCourseExist?.semesterRegistration).select('status');
-  
-  if(semesterRegistration?.status !== 'UPCOMING'){
-    throw new AppError(httpStatus.BAD_REQUEST, `Offered course can not be deleted! because the semester is ${semesterRegistration?.status}`);
+  const semesterRegistration = await SemesterRegistration.findById(
+    isOfferedCourseExist?.semesterRegistration,
+  ).select('status');
+
+  if (semesterRegistration?.status !== 'UPCOMING') {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `Offered course can not be deleted! because the semester is ${semesterRegistration?.status}`,
+    );
   }
   const result = await OfferedCourse.findByIdAndDelete(id);
   return result;
@@ -187,5 +188,5 @@ export const OfferedServices = {
   getAllOfferedCoursesFromDB,
   updateOfferedCourseIntoDB,
   getSingleOfferedCoursesFromDB,
-  deleteOfferedCoursesFromDB
+  deleteOfferedCoursesFromDB,
 };
