@@ -45,6 +45,7 @@ const getSingleOfferedCourses: RequestHandler = catchAsync(async(req, res)=>{
         })
     }
 });
+
 const updateOfferedCourse: RequestHandler = catchAsync(async(req, res)=>{
     const {id} = req.params;
     const result = await OfferedServices.updateOfferedCourseIntoDB(id, req.body);
@@ -65,9 +66,30 @@ const updateOfferedCourse: RequestHandler = catchAsync(async(req, res)=>{
     }
 });
 
+const deleteOfferedCourses: RequestHandler = catchAsync(async(req, res)=>{
+    const { id } = req.params;
+    const result = await OfferedServices.deleteOfferedCoursesFromDB(id);
+    if(result){
+        sendResponse(res, {
+            statusCode: httpStatus.OK,
+            success: true,
+            message: 'Successfully deleted offered course!',
+            data: null
+        })
+    }else{
+        sendResponse(res, {
+            statusCode: httpStatus.BAD_REQUEST,
+            success: false,
+            message: "Unsuccessful delete operation!",
+            data: result
+        })
+    }
+});
+
 export const OfferedCoursesControllers = {
     createOfferedCourse,
     getAllOfferedCourses,
     updateOfferedCourse,
-    getSingleOfferedCourses
+    getSingleOfferedCourses,
+    deleteOfferedCourses
 }
