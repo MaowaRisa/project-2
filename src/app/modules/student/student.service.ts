@@ -161,6 +161,7 @@ const getAllStudentsFromDB = async (query: Record<string, unknown>) => {
 const getSingleStudentFromDB = async (id: string) => {
   // const result = await Student.aggregate([{ $match: { id: id } }]);
   const result = await Student.findById(id)
+    .populate('user')
     .populate('admissionSemester')
     .populate({
       path: 'academicDepartment',
@@ -168,6 +169,9 @@ const getSingleStudentFromDB = async (id: string) => {
         path: 'academicFaculty',
       },
     });
+    if(!result){
+      throw new AppError(httpStatus.NOT_FOUND, "Student not found!")
+    }
   return result;
 };
 const deleteStudentFromDB = async (id: string) => {

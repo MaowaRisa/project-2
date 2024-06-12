@@ -1,11 +1,11 @@
 import { Schema, model } from 'mongoose';
-import { TUser } from './user.interface';
+import { TUser, UserModel } from './user.interface';
 import bcrypt from 'bcrypt';
 import config from '../../config';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, UserModel>(
   {
     id: {
       type: String,
@@ -15,6 +15,7 @@ const userSchema = new Schema<TUser>(
     password: {
       type: String,
       required: true,
+      select: 0
     },
     needsPasswordChange: {
       type: Boolean,
@@ -62,5 +63,11 @@ userSchema.pre('findOneAndUpdate', async function (next) {
   }
   next();
 });
+userSchema.statics.isUserExistsByCustomId = async function(id){
+  return await User.findOne({id})
+}
+userSchema.statics.isPasswordMatched = async function(plainTextPassword, hashedPassword){
+  return await bcrypt.compare(plainTextPassword, hashedPassword)
+}
 
-export const User = model<TUser>('User', userSchema);
+export const User = model<TUser, UserModel>('User', userSchema);
